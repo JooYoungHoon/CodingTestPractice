@@ -1,8 +1,12 @@
 # CodingTestPractice
 :traffic_light:
-예정
 
-### 1. 유형익히기 (1 ~ 15주차)
+## 진행방식    
+미팅시간: 매주 금요일 8시    
+할 일: 2주치 문제 1\~3\(필수\), 4\~5\(선택\)
+
+
+## 유형익히기 (1 ~ 15주차)
 | **주차** | **Tag**          | **문제 1**           | **문제 2**       |  **문제 3**       | **문제 4**  | **문제 5** | 
 | -------- | --------------- | ------------------  | --------------  | --------------- | ----------   | ------------|
 | 1주차    | greedy           |     <a href="https://www.acmicpc.net/problem/14916" target="_blank">거스름돈(14916)</a>            |    <a href="https://www.acmicpc.net/problem/11508" target="_black">2+1세일(11508)</a>            | <a href="https://www.acmicpc.net/problem/1931" target="_black">회의실(1931)</a> |  <a href="https://www.acmicpc.net/problem/2812" target="_black">크게 만들기(2812)</a> |      <a href="https://www.acmicpc.net/problem/1202" target="_black">보석 도둑(1202)</a>  
