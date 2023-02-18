@@ -12,65 +12,68 @@ import sys
 from collections import deque
 
 
-def dfs(arr, player, num, counter):
-    dx = [0, 0, 1, -1, 1, 1, -1, -1]
-    dy = [1, -1, 0, 0, 1, -1, -1, 1]
-    visited = [[0] * 19 for _ in range(19)]
-    point = []
-    before_direction = None
-    while player:
-        ty, tx, direction = black.popleft()
-        if direction is None:
-            for x, y in zip(dx, dy):
-                ny = ty + y
-                nx = tx + x
+def who_won(arr):
+    # direction [x, y]
+    dx = [1, 1, -1, 0]
+    dy = [0, 1, 1, 1]
 
-                if ny < 0 or ny >= 19 or nx < 0 or ny >= 19:
-                    continue
+    for idx, idy in zip(dx, dy):
+        visited = [[0] * 19 for _ in range(19)]
+        if idy == 1 and idx == 1:
+            area_y = range(15)
+            area_x = range(15)
+        if idy == 1 and idx == 0:
+            area_y = range(15)
+            area_x = range(19)
+        if idy == 0 and idx == 1:
+            area_y = range(19)
+            area_x = range(15)
+        if idy == 1 and idx == -1:
+            area_y = range(15)
+            area_x = range(4, 19)
+        for i in area_y:
+            for j in area_x:
+                if arr[i][j] == 1:
+                    count = 0
+                    point = [i, j]
+                    ty = i
+                    tx = j
+                    while 0 <= ty < 19 and 0 <= tx < 19:
+                        if arr[ty][tx] != 1:
+                            break
+                        if visited[ty][tx] == 1:
+                            break
+                        else:
+                            visited[ty][tx] = 1
+                            ty += idy
+                            tx += idx
+                            count += 1
 
-                if arr[ny][nx] == counter:
-                    continue
+                    if count == 5:
+                        if idx == -1 and idy == 1:
+                            point = [ty - 1, tx + 1]
+                        return point, 1
+                elif arr[i][j] == 2:
+                    count = 0
+                    point = [i, j]
+                    ty = i
+                    tx = j
+                    while 0 <= ty < 19 and 0 <= tx < 19:
+                        if arr[ty][tx] != 2:
+                            break
+                        if visited[ty][tx] == 1:
+                            break
+                        else:
+                            visited[ty][tx] = 1
+                            ty += idy
+                            tx += idx
+                            count += 1
+                    if count == 5:
+                        if idx == -1 and idy == 1:
+                            point = [ty - 1, tx + 1]
+                        return point, 2
 
-                if arr[ny][nx] == 0:
-                    continue
-
-                if visited[ny][nx] == 0:
-                    black.appendleft([ty, tx, [y, x]])
-            continue
-        else:
-            if visited[ty][tx] == 0:
-                visited[ty][tx] = 1
-            if before_direction is None:
-                point.append([ty, tx])
-                before_direction = direction
-            else:
-                if before_direction != direction:
-                    before_direction = None
-                    point = []
-                else:
-                    ny = ty + direction[0]
-                    nx = tx + direction[1]
-                    visited[ny][nx] = visited[ty][tx] + 1
-                    point.append([ny, nx])
-
-        if visited[ty][tx] == 5:
-            # player가 이긴경우
-            return [point], 1
-
-    return 0
-
-
-def who_won(arr, p1, p2):
-    p1_start, p1_won = dfs(arr, p1, 1, 2)
-    p2_start, p2_won = dfs(arr, p2, 2, 1)
-    if p1_won:
-        point = p1_start
-        won = 1
-    if p2_won:
-        point = p2_start
-        won = 2
-
-    return point, won
+    return None, 0
 
 
 if __name__ == '__main__':
@@ -80,10 +83,11 @@ if __name__ == '__main__':
     white = deque()
     for y in range(19):
         board.append(list(map(int, sys.stdin.readline().split())))
-        for x in range(19):
-            if board[y][x] == 1:
-                black.append([y, x, None])
-            elif board[y][x] == 2:
-                white.append([y, x, None])
 
-    print(who_won(board, black, white))
+    start_point, player = who_won(board)
+    if start_point is None:
+        print(player)
+    else:
+        start_point = list(map(str, map(lambda a: a + 1, start_point)))
+        print(player)
+        print(' '.join(start_point))
