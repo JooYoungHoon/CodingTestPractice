@@ -1,196 +1,118 @@
 """
 
-    [Baekjoon] https://www.acmicpc.net/problem/17276
+    재귀적 호출을 사용
 
-    크기가 n * n
-    n은 홀수
-    2차원 정수 배열
-    45도의 배수만큼 시계방향 혹은 반시계방향으로 돌린다.
+    n => 2k + 1
+    i 로 나타내서 연속적 숫자로 나타내기
 
-    X의 주 대각선 (1,1), (2,2), ... (n,n)을 ((n+1)/2번째 열로 옮긴다)
-    X의 가운데 열을 X의 부 대각선으로 옮긴다. ((n,1), (n-1, 2), ... (1, n))
-    X 부 대각선은 X의 가운데 행으로 옮긴다.
+    테두리를 step(i)만큼 이동시키면 됨.
 
-    모든 원소의 기존 순서는 유지되어야함
+    해당 점에 있는 좌표 값들을 구해
 
-    X의 다른 원소들의 위치는 변하지 않는다.
+    차례대로 옮겨주는 연산을 실행
 
-    45도 반시계 방향도 이와 비슷하게 정의된다.
+    45도 회전
 
-    main-digonal(주 대각선) => md
-    가운데 열 => mid-rol => mr
-    sub-digonal => sd
-    mid-col => mc
-
-    mr와 mc를 기준선으로 정하며 중간점을 나타나면 -> (N//2, N//2)이다.
-
-    왼쪽 위는 1
-    왼쪽 아래는 2
-    오른쪽 아래는 3
-    오른쪽 위는 4
-
-    (y, x)
-    중간점과 좌표의 거리를 측정했을 때 거리가 => dis(distance)
-    여기서 dis는 간단하게 mr과 mc와 수직으로 내린 거리라고 정의함.
-    + md 위에 있는 원소 중 중간점 (y, x)좌표보다 작은 경우 dis만큼 움직인다.
-    방향에 따라 아래, 오른쪽으로 이동한다.
-    + mr 위에 있는 원소 중 중간점 (y, x) 좌표보다 작은 경우 dis만큼 움직인다.
-    방향에 따라 왼쪽, 오른쪽으로 이동한다.
-
-    점의 위치를 알려주는 함수 2개 필요
-    1. md,mr,mc,sd 에 있는지 1, 2, 3, 4
-    2. 중간점 좌표보다 작은 쪽에 있는 지 큰 쪽에 있는지 확인. 0, 1
-    3. 각도의 방향 (-1, 1)
 
 """
 
 
-def pos(y, x, N):
+def find_outlier(k, arr_size):
+    """ 테두리 찾기 """
+    n = 2 * k + 1
+    gap = arr_size - k
+    move = [1, 1]
+    x = list(range(0, n, k))
+
+    idx = [[j + move[0] * gap, move[1] * gap] for j in x[1:]]
+    for j in x[1:]:
+        idx.append([n - 1 + move[0] * gap, j + move[1] * gap])
+    for j in x[1::-1]:
+        idx.append([j + move[0] * gap, n - 1 + move[1] * gap])
+    for j in x[1::-1]:
+        idx.append([move[0] * gap, j + move[1] * gap])
+
+    return idx
+
+
+def get_rotate(degree):
     """
-        y, x 좌표값
-        return line_pos(int), is_big(bool)
-
-        md => 1
-        mr => 2
-        mc => 3
-        md => 4
-
-        is_big => 0(small), 1(big)
+        return value
+        flag => 반전을 하는 경우
+        회전 수
     """
-    mid = [N // 2, N // 2]
-    area = -1
-    if mid == [y, x]:
-        return -1, -1
+    flag = 0
 
-    md = [[y, x] for y, x in zip(range(N), range(N))]
-    mr = [[y, mid[1]] for y in range(N)]
-    mc = [[y, x] for y, x in zip(range(N), range(N - 1, -1, -1))]
-    sd = [[mid[0], x] for x in range(N)]
+    if degree < 0:
+        degree += 360
 
-    if [y, x] in md:
-        line_pos = 1
-    elif [y, x] in mr:
-        line_pos = 2
-    elif [y, x] in mc:
-        line_pos = 3
-    elif [y, x] in sd:
-        line_pos = 4
-    else:
-        line_pos = -1
+    if degree == 180:
+        return 1, 0
 
-    if line_pos == 1 or line_pos == 4:
-        if y < mid[0] and x < mid[1]:
-            area = 1
-        elif y < mid[0] and x > mid[1]:
-            area = 2
-        elif y > mid[0] and x > mid[1]:
-            area = 3
-        elif y > mid[0] and x < mid[1]:
-            area = 4
-    elif line_pos == 2:
-        if y < mid[0]:
-            area = 5
-        else:
-            area = 6
-    elif line_pos == 3:
-        if x < mid[0]:
-            area = 7
-        else:
-            area = 8
+    if degree == 360 or degree == 0:
+        return flag, 0
 
-    return line_pos, area
+    if degree < 180:
+        return flag, degree // 45
+
+    same_degree = {i + 180: i for i in [45, 90, 135]}
+    if degree in same_degree.keys():
+        return 1, same_degree[degree] // 45
 
 
-def solve(n, arr, d):
-    if n == 1:
+def mirror(arr, i, arr_size):
+    if i < 1:
         return arr
-    ret_arr = [[0] * n for _ in range(n)]
-    k = abs(d) // 45
-    if d > 0:
-        forward = 1
-    else:
-        forward = 0
 
-    for _ in range(k):
-        for y in range(n):
-            for x in range(n):
-                line_pos, area = pos(y, x, n)
-                dy = abs(n // 2 - y)
-                dx = abs(n // 2 - x)
-                if line_pos == -1:
-                    ret_arr[y][x] = arr[y][x]
-                    continue
-                # move = [y, x]
-                if area == 1 and line_pos == 1:
-                    if forward:
-                        move = [0, 1]
-                    else:
-                        move = [1, 0]
-                    dy, dx = map(lambda a: a * dy, move)
-                elif area == 2 and line_pos == 4:
-                    if forward:
-                        move = [1, 0]
-                    else:
-                        move = [0, 1]
-                    dy, dx = map(lambda a: a * dx, move)
-                elif area == 3 and line_pos == 1:
-                    if forward:
-                        move = [0, -1]
-                    else:
-                        move = [-1, 0]
-                    dy, dx = map(lambda a: a * dy, move)
-                elif area == 4 and line_pos == 4:
-                    if forward:
-                        move = [-1, 0]
-                    else:
-                        move = [0, 1]
-                    dy, dx = map(lambda a: a * dx, move)
-                elif area == 5 and line_pos == 2:
-                    if forward:
-                        move = [0, 1]
-                    else:
-                        move = [0, -1]
-                    dy, dx = map(lambda a: a * dy, move)
-                elif area == 6 and line_pos == 2:
-                    if forward:
-                        move = [0, -1]
-                    else:
-                        move = [0, 1]
-                    dy, dx = map(lambda a: a * dy, move)
-                elif area == 7 and line_pos == 3:
-                    if forward:
-                        move = [-1, 0]
-                    else:
-                        move = [1, 0]
-                    dy, dx = map(lambda a: a * dx, move)
-                elif area == 8 and line_pos == 3:
-                    if forward:
-                        move = [1, 0]
-                    else:
-                        move = [-1, 0]
-                    dy, dx = map(lambda a: a * dx, move)
-                else:
-                    ret_arr[y][x] = arr[y][x]
+    outlier = find_outlier(i, arr_size)
 
-                ny = y + dy
-                nx = x + dx
+    # 무조건 8개 나옴 [0:4] [4:-1]
 
-                ret_arr[ny][nx] = arr[y][x]
+    for a, b in zip(outlier[0:4], outlier[4:8]):
+        swap = arr[a[1]][a[0]]
+        arr[a[1]][a[0]] = arr[b[1]][b[0]]
+        arr[b[1]][b[0]] = swap
 
-        arr = ret_arr
+    arr = mirror(arr, i - 1, arr_size)
+    return arr
 
-    return ret_arr
 
+def rotate(arr, i, d_i, arr_size):
+    """ 45도 시계 방향으로 회전 """
+    if i < 1:
+        return arr
+
+    outlier = find_outlier(i, arr_size)
+
+    for _ in range(d_i):
+        temp = arr[outlier[-1][1]][outlier[-1][0]]
+        for j in range(len(outlier) - 2, -1, -1):
+            x = outlier[j][0]
+            y = outlier[j][1]
+
+            # x, y 이전 point
+            before_x = outlier[j + 1][0]
+            before_y = outlier[j + 1][1]
+
+            arr[before_y][before_x] = arr[y][x]
+        arr[outlier[0][1]][outlier[0][0]] = temp
+    arr = rotate(arr, i - 1, d_i, arr_size)
+    return arr
 
 if __name__ == '__main__':
 
     T = int(input())
     for _ in range(T):
-        arr = []
         n, d = map(int, input().split())
+        board = []
         for _ in range(n):
-            arr.append(list(map(int, input().split())))
+            board.append(list(map(int, input().split())))
+        k = (n - 1) // 2
+        # flag => 반전 여부(mirror), count 회전 횟수)
+        flag, count = get_rotate(degree=d)
+        board = rotate(board, k, count, arr_size=k)
+        if flag:
+            board = mirror(board, k, arr_size=k)
 
-        print(solve(n, arr, d))
-
-        # print()
+        for i in range(n):
+            print(' '.join(map(str, board[i])))
