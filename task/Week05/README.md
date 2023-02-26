@@ -1,7 +1,7 @@
 
-## 6 주차 문제 리스트
+## 5 주차 문제 리스트
 
-6주차에는 정렬 유형의 문제로 구성.
+5주차에는 DFS&BFS 유형의 문제로 구성.
 
 ### Issue Template
 
@@ -13,10 +13,10 @@
 
 ```markdown
 
-- [ ] 1. [카드](https://www.acmicpc.net/problem/11652)
-- [ ] 2. [수리공 항승](https://www.acmicpc.net/problem/1449)
-- [ ] 3. [신입사원](https://www.acmicpc.net/problem/1946)
-- [ ] 4. [팀빌딩](https://www.acmicpc.net/problem/22945)
-- [ ] 5. [철로](https://www.acmicpc.net/problem/13334)
+- [ ] 1. [DFS와BFS](https://www.acmicpc.net/problem/1260)
+- [ ] 2. [미로 탐색](https://www.acmicpc.net/problem/2178)
+- [ ] 3. [양치기꿍](https://www.acmicpc.net/problem/3187)
+- [ ] 4. [연구소](https://www.acmicpc.net/problem/14502)
+- [ ] 5. [빙산](https://www.acmicpc.net/problem/2573)
 
 ```
