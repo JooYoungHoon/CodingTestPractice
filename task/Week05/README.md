@@ -13,10 +13,10 @@
 
 ```markdown
 
-- [ ] 1. [DFS와BFS](https://www.acmicpc.net/problem/1260)
-- [ ] 2. [미로 탐색](https://www.acmicpc.net/problem/2178)
-- [ ] 3. [양치기꿍](https://www.acmicpc.net/problem/3187)
-- [ ] 4. [연구소](https://www.acmicpc.net/problem/14502)
-- [ ] 5. [빙산](https://www.acmicpc.net/problem/2573)
+- [ ] 1. [숨바꼭질](https://www.acmicpc.net/problem/1697)
+- [ ] 2. [촌수계산](https://www.acmicpc.net/problem/2644)
+- [ ] 3. [숫자고르기](https://www.acmicpc.net/problem/2668)
+- [ ] 4. [빵집](https://www.acmicpc.net/problem/3109)
+- [ ] 5. [아기상어](https://www.acmicpc.net/problem/16236)
 
 ```
